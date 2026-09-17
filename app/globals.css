@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0b0708;
+  --color-paper: #ece5e3;
+  --color-brand-red: #e11b22;
+  --font-display: "Anton", sans-serif;
+}
+
+@layer base {
+  body { @apply bg-ink text-paper; }
+}
+
+@theme {
+  --animate-pillars: pillars 18s linear infinite;
+}
+
+@keyframes pillars {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
