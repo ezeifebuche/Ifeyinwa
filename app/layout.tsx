@@ -80,8 +80,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${playfair.variable} ${inter.variable} font-body`}>
+        {/* Sets data-theme before hydration to avoid a flash of the wrong theme. */}
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`(function(){try{var t=localStorage.getItem('theme');
+            if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+            document.documentElement.dataset.theme=t;}catch(e){}})();`}
+        </Script>
+
         {children}
         <WhatsAppFloat />
         <CookieBanner />
@@ -89,7 +96,6 @@ export default function RootLayout({
         {/* Plausible — privacy-friendly, no cookie banner required for analytics itself.
             Swap for GA4's gtag.js here if the client prefers Google Analytics instead. */}
         <Script
-          defer
           data-domain="ifeyinwa.com"
           src="https://plausible.io/js/script.js"
           strategy="afterInteractive"

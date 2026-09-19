@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import CreatorCard from "@/components/Agency/CreatorCard";
 import CreatorFilters from "@/components/Agency/CreatorFilters";
 import { CREATORS, filterCreators } from "@/lib/creators";
+import Navbar from "@/components/Navbar";
 
 const metallic =
   "bg-gradient-to-b from-white via-[#c6c9ce] to-[#7c8087] bg-clip-text text-transparent";
@@ -46,6 +47,7 @@ export default async function CreatorsPage({ searchParams }: Props) {
 
   return (
     <main className="relative min-h-screen bg-ink text-paper">
+      <Navbar />
       <section className="relative overflow-hidden border-b border-paper/10 px-6 pb-10 pt-14 md:pt-20">
         <div
           className="pointer-events-none absolute -top-[20%] right-[-6%] h-[520px] w-[420px] rounded-full opacity-50 blur-2xl"

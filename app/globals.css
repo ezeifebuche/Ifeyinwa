@@ -1,21 +1,90 @@
 @import "tailwindcss";
 
-@theme {
-  --color-ink: #0b0708;
-  --color-paper: #ece5e3;
-  --color-brand-red: #e11b22;
-  --font-display: "Anton", sans-serif;
+/* `@theme inline` makes bg-ink / text-paper / text-hi compile to var(--ink)
+   etc., so flipping the variables below flips the whole site. */
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-hi: var(--hi);
+  --color-brand-red: var(--brand-red);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-err: var(--err);
+
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
 }
 
-@layer base {
-  body { @apply bg-ink text-paper; }
-}
-
+/* Non-color theme values (these don't change with the theme). */
 @theme {
+  --breakpoint-xs: 25rem;
   --animate-pillars: pillars 18s linear infinite;
 }
 
 @keyframes pillars {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+
+/* Dark is the brand default. */
+:root {
+  --ink: #0f0b0a;
+  --paper: #ece5e3;
+  --hi: #ffffff;
+  --brand-red: #e11b22;
+  --surface: #1a1216;
+  --surface-2: #120c0e;
+
+  --card-title: #ffffff;
+  --err: #fca5a5;
+  --ok: #34d399;
+  --warn: #fbbf24;
+
+  --metal-1: #ffffff;
+  --metal-2: #c6c9ce;
+  --metal-3: #7c8087;
+
+  --nav-h: 3.75rem;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --ink: #faf7f6;
+  --paper: #2a2224;
+  --hi: #0d0709;
+  --brand-red: #c8111a;
+  --surface: #ffffff;
+  --surface-2: #f3edeb;
+
+  --card-title: var(--brand-red);
+  --err: #b91c1c;
+  --ok: #047857;
+  --warn: #b45309;
+
+  --metal-1: #241a1d;
+  --metal-2: #4a4145;
+  --metal-3: #7c7377;
+
+  color-scheme: light;
+}
+
+@layer base {
+    * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--ink);
+    color: var(--paper);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    body {
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+  }
+}
+
+/* The red glows are built for a dark ground, so dial them back in daylight. */
+[data-theme="light"] [aria-hidden="true"][class*="blur-"] {
+  opacity: 0.18;
 }
