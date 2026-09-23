@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import { MISSION, WHY_CHOOSE } from "@/lib/about";
+import Footer from "@/components/Footer";
 
 /* Uses the site theme tokens: bg-ink, text-paper, text-highlight,
    text-brand-red, surface / surface-2, font-display. */
@@ -124,6 +125,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <Footer/>
     </main>
   );
 }

@@ -10,6 +10,7 @@ import {
   HOW_IT_WORKS,
   SERVICES,
 } from "@/lib/agency";
+import Footer from "@/components/Footer";
 
 /* Uses the site theme tokens: bg-ink, text-paper, text-hi, text-brand-red,
    surface / surface-2, --card-title, --ok, font-display. */
@@ -307,6 +308,7 @@ export default function AgencyPage() {
           </div>
         </div>
       </section>
+      <Footer/>
     </main>
   );
 }

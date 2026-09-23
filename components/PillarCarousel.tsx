@@ -117,7 +117,7 @@ export default function PillarCarousel() {
     )
   }
   className={`absolute flex h-[300px] w-[170px] flex-col justify-end overflow-hidden rounded-2xl border p-4 text-left shadow-[0_30px_60px_rgba(0,0,0,0.55)] transition-transform duration-400 ease-out md:h-[400px] md:w-[230px] md:p-5 ${
-    isCenter ? "border-white/40" : "border-paper/10"
+    isCenter ? "border-white/40" : "border-white/10"
   }`}
   style={{
     transform: `translateX(${offset.x * 0.72}px) rotateY(${offset.rot}deg) scale(${offset.scale})`,
@@ -140,40 +140,43 @@ export default function PillarCarousel() {
     className={`absolute inset-0 bg-gradient-to-b ${pillar.gradient} opacity-30`}
   />
 
+  {/* extra bottom scrim so white text stays legible over any photo, in any theme */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
   {/* text content — now correctly wraps everything, sits above image+gradient */}
   <div className="relative z-10 flex h-full flex-col justify-end">
     {pillar.comingSoon && (
-      <span className="absolute right-3 top-3 rounded-full bg-paper/10 px-2 py-1 text-[9px] tracking-wide text-paper/80">
+      <span className="absolute right-3 top-3 rounded-full bg-white/10 px-2 py-1 text-[9px] tracking-wide text-white/80">
         Coming soon
       </span>
     )}
-    <div className="text-[10px] tracking-[0.2em] text-paper/75">
+    <div className="text-[10px] tracking-[0.2em] text-white/75">
       {pillar.label}
     </div>
     <h3
-      className={`mt-1.5 font-display font-bold ${
+      className={`mt-1.5 font-display font-bold text-white ${
         isCenter ? "text-[26px] md:text-[30px]" : "text-[19px] md:text-[22px]"
       }`}
     >
       {pillar.title}
     </h3>
-    <p className={`mt-2 text-paper/70 ${isCenter ? "text-[13px]" : "text-[11px] md:text-[12.5px]"}`}>
+    <p className={`mt-2 text-white/70 ${isCenter ? "text-[13px]" : "text-[11px] md:text-[12.5px]"}`}>
       {pillar.desc}
     </p>
 
     {pillar.comingSoon ? (
       <div
-        className="mt-3 flex items-center overflow-hidden rounded-full border border-paper/30"
+        className="mt-3 flex items-center overflow-hidden rounded-full border border-white/30"
         onClick={(e) => e.stopPropagation()}
       >
         <input
           type="email"
           placeholder="Notify me"
-          className="w-full bg-transparent px-3 py-1.5 text-[11px] text-paper placeholder:text-paper/40 focus:outline-none"
+          className="w-full bg-transparent px-3 py-1.5 text-[11px] text-white placeholder:text-white/40 focus:outline-none"
         />
       </div>
     ) : (
-      <div className="mt-3 flex h-8 w-8 items-center justify-center rounded-full border border-paper/50 text-sm">
+      <div className="mt-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/50 text-sm text-white">
         →
       </div>
     )}
@@ -187,7 +190,7 @@ export default function PillarCarousel() {
         <button
           aria-label="Previous"
           onClick={() => pauseThenGo(() => go(-1))}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-paper/15"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white"
         >
           ←
         </button>
@@ -198,7 +201,7 @@ export default function PillarCarousel() {
               aria-label={`Go to ${p.title}`}
               onClick={() => pauseThenGo(() => setActive(i))}
               className={`h-[3px] rounded-full transition-all ${
-                i === active ? "w-6 bg-brand-red" : "w-5 bg-paper/25"
+                i === active ? "w-6 bg-brand-red" : "w-5 bg-white/25"
               }`}
             />
           ))}
@@ -206,7 +209,7 @@ export default function PillarCarousel() {
         <button
           aria-label="Next"
           onClick={() => pauseThenGo(() => go(1))}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-paper/15"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white"
         >
           →
         </button>

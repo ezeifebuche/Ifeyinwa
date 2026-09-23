@@ -81,9 +81,6 @@ export default function Navbar({ minimal = false }: Props) {
           <div className="truncate text-xl font-bold tracking-wide sm:text-2xl">
             IFEYINW<span className="text-brand-red">A</span>
           </div>
-          <div className="mt-1 whitespace-nowrap text-[5px] tracking-[0.28em] text-paper/60">
-            CREATE · EMPOWER · INSPIRE
-          </div>
         </Link>
 
         {!minimal && (
@@ -174,7 +171,10 @@ export default function Navbar({ minimal = false }: Props) {
       </nav>
 
       {/* menu panel — only in the DOM when open, so hidden links can't be
-          reached with the keyboard */}
+          reached with the keyboard. Both the overlay and the panel are
+          `fixed`, positioned right under the navbar via --nav-h, so opening
+          the menu never changes the header's height or pushes page content
+          around (that mismatch was what caused the "split screen" look). */}
       {open && (
         <>
           <div
@@ -186,7 +186,7 @@ export default function Navbar({ minimal = false }: Props) {
           <div
             id="mobile-nav"
             ref={panelRef}
-            className={`relative z-50 max-h-[calc(100dvh-3.75rem)] overflow-y-auto border-t border-paper/10 bg-ink pb-[env(safe-area-inset-bottom)] ${mobileOnly}`}
+            className={`fixed inset-x-0 top-[var(--nav-h,3.75rem)] z-50 max-h-[calc(100dvh-var(--nav-h,3.75rem))] overflow-y-auto border-t border-paper/10 bg-ink pb-[env(safe-area-inset-bottom)] ${mobileOnly}`}
           >
             <ul className="mx-auto max-w-5xl px-4 sm:px-6 md:px-16">
               {menuLinks.map((link) => {

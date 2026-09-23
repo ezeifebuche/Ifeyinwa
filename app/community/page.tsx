@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import WaitlistForm from "@/components/WaitlistForm";
+import Footer from "@/components/Footer";
 
 /* Uses the site theme tokens: bg-ink, text-paper, text-hi, text-brand-red,
    surface / surface-2, --card-title, font-display. */
@@ -128,6 +129,7 @@ export default function CommunityPage() {
           </div>
         </div>
       </section>
+      <Footer/>
     </main>
   );
 }

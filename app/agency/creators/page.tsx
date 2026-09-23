@@ -6,10 +6,9 @@ import CreatorCard from "@/components/Agency/CreatorCard";
 import CreatorFilters from "@/components/Agency/CreatorFilters";
 import { CREATORS, filterCreators } from "@/lib/creators";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-const metallic =
-  "bg-gradient-to-b from-white via-[#c6c9ce] to-[#7c8087] bg-clip-text text-transparent";
-
+const metallic = "text-highlight";
 export const metadata: Metadata = {
   title: "Find an AI video creator — Ifeyinwa Agency",
   description:
@@ -124,6 +123,7 @@ export default async function CreatorsPage({ searchParams }: Props) {
           Post a brief
         </Link>
       </section>
+      <Footer />
     </main>
   );
 }

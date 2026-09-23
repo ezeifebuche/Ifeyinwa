@@ -12,6 +12,7 @@ import {
   PACKAGES,
   WHATSAPP_LINK,
 } from "@/lib/academy";
+import Footer from "@/components/Footer";
 
 /* Uses the site's existing theme tokens: bg-ink, text-paper, text-brand-red,
    font-display. Fonts come from layout.tsx — nothing is imported here. */
@@ -374,6 +375,7 @@ export default function AcademyPage() {
           </div>
         </div>
       </section>
+      <Footer/>
     </main>
   );
 }
