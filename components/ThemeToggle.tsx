@@ -40,13 +40,15 @@ export default function ThemeToggle() {
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       aria-pressed={!isDark}
       title={isDark ? "Light mode" : "Dark mode"}
-      className="relative flex size-10 items-center justify-center rounded-full border border-paper/15 text-paper/70 transition hover:border-paper/35 hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red motion-reduce:transition-none"
+      className="relative flex size-9 items-center justify-center rounded-full border border-paper/15 text-paper/70 transition hover:border-paper/35 hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red motion-reduce:transition-none"
     >
-      {/* Both icons render; opacity and rotation swap them. Hidden until
-          mounted so the server render can't show the wrong one. */}
+      {/* Both icons render; opacity and rotation swap them. Before mount,
+          show the moon at full opacity (matching the "dark" default state
+          and the inline script in layout.tsx) instead of leaving the
+          button blank — avoids the empty-circle flash on first paint. */}
       <span
         className={`absolute transition-all duration-300 motion-reduce:transition-none ${
-          mounted && isDark
+          !mounted || isDark
             ? "scale-100 rotate-0 opacity-100"
             : "scale-50 -rotate-90 opacity-0"
         }`}

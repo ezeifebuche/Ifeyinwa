@@ -17,7 +17,8 @@ const NAV_LINKS = [
 
 /* Kills the grey/black flash Android Chrome paints on tapped controls. */
 const noTapFlash = "[-webkit-tap-highlight-color:transparent] touch-manipulation";
-const iconBtn = `flex size-9 shrink-0 items-center justify-center rounded-full border border-paper/15 text-paper/60 transition hover:border-paper/35 hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red motion-reduce:transition-none ${noTapFlash}`;
+const iconBtnBase = `size-9 shrink-0 items-center justify-center rounded-full border border-paper/15 text-paper/60 transition hover:border-paper/35 hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-red motion-reduce:transition-none ${noTapFlash}`;
+const iconBtn = `flex ${iconBtnBase}`;
 
 type Props = {
   /* Logo + theme toggle + menu button only (checkout-style pages). */
@@ -30,13 +31,10 @@ export default function Navbar({ minimal = false }: Props) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // In minimal mode the account icon is hidden, so it moves into the menu.
- const menuLinks = minimal
-  ? [...NAV_LINKS, { href: "/sign-in", label: "Sign in" }]
-  : NAV_LINKS;
-
-  // The menu is mobile-only on the full navbar, at every width when minimal.
-  const mobileOnly = minimal ? "" : "md:hidden";
+  // Sign in is always reachable from the mobile menu — the top-bar icon
+  // is desktop-only now (see below), since there isn't room for it next
+  // to the logo and hamburger on narrow screens.
+  const menuLinks = [...NAV_LINKS, { href: "/sign-in", label: "Sign in" }];
 
   // Close on navigation.
   useEffect(() => setOpen(false), [pathname]);
@@ -51,22 +49,20 @@ export default function Navbar({ minimal = false }: Props) {
       }
     };
 
-    // Lock scroll without the width jump a disappearing scrollbar causes.
-    const gap = window.innerWidth - document.documentElement.clientWidth;
-    const prev = {
-      overflow: document.body.style.overflow,
-      padding: document.body.style.paddingRight,
-    };
+    // Lock scroll while the menu is open, so the page behind it doesn't
+    // move. (No scrollbar-gap padding here — the header is `sticky`, an
+    // in-flow child of body, so adding padding to body was shrinking the
+    // header's own width and shifting the logo/icons every time the menu
+    // opened. That was the actual bug, not the icon toggle itself.)
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    if (gap > 0) document.body.style.paddingRight = `${gap}px`;
 
     document.addEventListener("keydown", onKey);
     panelRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
 
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev.overflow;
-      document.body.style.paddingRight = prev.padding;
+      document.body.style.overflow = prevOverflow;
     };
   }, [open]);
 
@@ -113,7 +109,7 @@ export default function Navbar({ minimal = false }: Props) {
           <ThemeToggle />
 
           {!minimal && (
-            <Link href="/sign-in" aria-label="Sign in" className={iconBtn}>
+            <Link href="/sign-in" aria-label="Sign in" className={`hidden md:flex ${iconBtnBase}`}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -139,7 +135,7 @@ export default function Navbar({ minimal = false }: Props) {
             </Link>
           )}
 
-          {/* menu button */}
+          {/* menu button — hidden on desktop at every width, minimal or not */}
           <button
             ref={buttonRef}
             type="button"
@@ -147,7 +143,7 @@ export default function Navbar({ minimal = false }: Props) {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}
-            className={`text-paper ${mobileOnly} ${iconBtn}`}
+            className={`text-paper md:hidden ${iconBtn}`}
           >
             <span className="relative block h-3.5 w-[18px]">
               <span
@@ -170,59 +166,50 @@ export default function Navbar({ minimal = false }: Props) {
         </div>
       </nav>
 
-      {/* menu panel — only in the DOM when open, so hidden links can't be
-          reached with the keyboard. Both the overlay and the panel are
-          `fixed`, positioned right under the navbar via --nav-h, so opening
-          the menu never changes the header's height or pushes page content
-          around (that mismatch was what caused the "split screen" look). */}
+      {/* Mobile dropdown — lives in normal document flow directly under
+          the nav row, so it simply pushes the page content down when it
+          opens. No fixed positioning, no measured offset, nothing that
+          can drift out of sync with the navbar's real height. */}
       {open && (
-        <>
-          <div
-            className={`fixed inset-x-0 bottom-0 top-[var(--nav-h,3.75rem)] z-40 bg-ink/70 backdrop-blur-sm ${mobileOnly}`}
-            onClick={() => setOpen(false)}
-            aria-hidden="true"
-          />
+        <div
+          id="mobile-nav"
+          ref={panelRef}
+          className="max-h-[70vh] overflow-y-auto border-t border-paper/10 bg-ink pb-[env(safe-area-inset-bottom)] md:hidden"
+        >
+          <ul className="px-4 sm:px-6">
+            {menuLinks.map((link) => {
+              const isActive = pathname.startsWith(link.href);
 
-          <div
-            id="mobile-nav"
-            ref={panelRef}
-            className={`fixed inset-x-0 top-[var(--nav-h,3.75rem)] z-50 max-h-[calc(100dvh-var(--nav-h,3.75rem))] overflow-y-auto border-t border-paper/10 bg-ink pb-[env(safe-area-inset-bottom)] ${mobileOnly}`}
-          >
-            <ul className="mx-auto max-w-5xl px-4 sm:px-6 md:px-16">
-              {menuLinks.map((link) => {
-                const isActive = pathname.startsWith(link.href);
+              return (
+                <li key={link.href} className="border-b border-paper/10">
+                  <Link
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`flex items-center justify-between py-3.5 text-[16px] ${noTapFlash} ${
+                      isActive ? "text-brand-red" : "text-paper"
+                    }`}
+                  >
+                    {link.label}
+                    <span aria-hidden="true" className="text-paper/30">
+                      ›
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
 
-                return (
-                  <li key={link.href} className="border-b border-paper/10">
-                    <Link
-                      href={link.href}
-                      aria-current={isActive ? "page" : undefined}
-                      className={`flex items-center justify-between py-3.5 text-[16px] ${noTapFlash} ${
-                        isActive ? "text-brand-red" : "text-paper"
-                      }`}
-                    >
-                      {link.label}
-                      <span aria-hidden="true" className="text-paper/30">
-                        ›
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {!minimal && (
-              <div className="px-4 py-4 sm:px-6">
-                <Link
-                  href="/enrol"
-                  className={`block rounded-full bg-brand-red px-5 py-3.5 text-center font-semibold text-white active:scale-[0.97] ${noTapFlash}`}
-                >
-                  Enrol
-                </Link>
-              </div>
-            )}
-          </div>
-        </>
+          {!minimal && (
+            <div className="px-4 py-4 sm:px-6">
+              <Link
+                href="/enrol"
+                className={`block rounded-full bg-brand-red px-5 py-3.5 text-center font-semibold text-white active:scale-[0.97] ${noTapFlash}`}
+              >
+                Enrol
+              </Link>
+            </div>
+          )}
+        </div>
       )}
     </header>
   );
